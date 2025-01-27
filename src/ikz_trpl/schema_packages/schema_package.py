@@ -461,10 +461,14 @@ class Scan(ArchiveSection):
     )
     motors = SubSection(section_def=Motors)
     integration_time = Quantity(
-        type=int, a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
+        type=int, 
+        unit='seconds',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
     )
     settle_time = Quantity(
-        type=int, a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
+        type=int, 
+        unit='seconds',
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
     )
 
 
@@ -553,7 +557,7 @@ class Counters(ArchiveSection):
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity
         )
     )
-    counters= Quantity(
+    counters= Quantity( 
         type=float,
         shape=['*'],
         a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
