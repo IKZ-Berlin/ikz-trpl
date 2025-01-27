@@ -10,6 +10,7 @@ from nomad.datamodel.metainfo.basesections import (
     CompositeSystemReference,
     Instrument,
     Measurement,
+    MeasurementResult,
 )
 from nomad.metainfo import MEnum, Quantity, SchemaPackage, SubSection
 
@@ -537,7 +538,29 @@ class TRPLSample(CompositeSystemReference):
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
     )
 
-
+class Position(ArchiveSection):
+    name= Quantity(
+        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity
+        )
+    )
+    positions= Quantity(
+        type=float,
+        shape=['*'],
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
+    )
+class Counters(ArchiveSection):
+    name= Quantity(
+        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity
+        )
+    )
+    counters= Quantity(
+        type=float,
+        shape=['*'],
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
+    )
+class Results(MeasurementResult):
+    positions = SubSection(section_def=Position, repeats=True)
+    counters = SubSection(section_def=Counters, repeats=True)
 class IKZTRPLScan(Measurement, Schema):
     name = Quantity(
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
@@ -550,6 +573,7 @@ class IKZTRPLScan(Measurement, Schema):
     )
 
     samples = SubSection(section_def=TRPLSample)
+    results = SubSection(section_def=Results)
 
     measurement_settings = SubSection(section_def=MeasurementSettings)
     measurement_setup = SubSection(section_def=MeasurementSetup)
