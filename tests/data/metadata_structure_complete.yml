@@ -1,0 +1,119 @@
+# Test YAML of complete metadata strucutre
+# For each entry the data type is given as a value
+# Comments show how to get the values from DoRaPy
+
+Setup information:
+    Setup: string  # choose from PL, TG or THz
+    Lasers:
+        Pharos:
+            Function: string
+    Non-linear crystals:
+        category: bwo
+            Quantity: integer
+            Function: string
+            Inventree: string
+            Optional information: string             
+    Polarization optics:
+        category:
+            Quantity: integer
+            Function: string
+            Inventree: string
+            Optional information: string              
+    Mirrors:   
+        category:
+            Quantity: integer
+            Function: string
+            Inventree: string
+            Optional information: string    
+    Focusing optics:
+        category:
+            Quantity: integer
+            Function: string
+            Inventree: string
+            Optional information: string            
+    Filters:
+        category:
+            Quantity: integer
+            Function: string
+            Inventree: string
+            Optional information: string           
+    Special components:
+        category:
+            Quantity: integer
+            Function: string
+            Inventree: string
+            Optional information: string             
+    Delay:
+        Type: string      
+    Detector:
+        category:
+            Quantity: integer
+            Function: string
+            Inventree: string
+            Optional information: string                 
+    Data processing: string
+
+Sample:
+    Sample ID: string
+    Material and Structure: string
+    Description: string
+    #Sample photo:  # How to handle the sample photo?
+    
+Measurement information:
+    Date: string                        #datetime
+    Time: string                        #datetime
+    Data filename: string               #self.name
+    Main user name: string
+    Laser:
+        Pharos:
+            Wavelength: integer
+            Repetition rate: integer    # Machine.Pharos.reprate
+            Output power: integer       # Machine.Pharos.outputpower
+            Power at setup: integer
+            State: string               # Machine.Pharos.state
+            Optional: string
+    Excitation:
+        Spot size h: integer            # Machine.Fluence.fwhm_x
+        Spot size v: integer            # Machine.Fluence.fwhm_y
+        Power at sample: integer        # Machine.Fluence.laserPower
+        Fluence: integer                # Machine.Fluence.laserFluence
+        Incidence angle: integer        # Machine.Fluence.incidence_angle
+        Polarization: string
+        Wavelength: integer
+        Optional: string
+    Probing:
+        Spot size h: integer
+        Spot size v: integer
+        Power at sample: integer
+        Fluence: integer
+        Incidence angle: integer 
+        Polarization: string
+        Wavelength: integer
+        Optional: string
+    Motor start positions:              
+        Motor:                          #Machine.motors
+            Value: integer              #Machine.motors.userPosition
+            State: string               #Machine.motors.state
+            Lower limit: integer        #Machine.motors.min            
+            Upper limit: integer        #Machine.motors.max
+    Scan:  
+        Command: string                 #self.cmd
+        Motor:
+            Name: string                #self.motor.name
+            Start: integer              #self.start
+            Stop: integer               #self.end
+            Intervals: integer          #self.intervals
+        Integration time: integer       #self.integrationtime
+        Settle time: integer            #self.timetosettle
+    Measurement device parameters:
+        Device:
+            Paramters: string
+
+Positions:
+    Motors: numpy.ndarray               #Machine.motors[0].name: self.reportedPositions
+
+Counters:
+    Counters: numpy.ndarray             #Machine.counterList.counters[0].name: self.counterDataArray[i, :]
+
+Images:
+    Detectors: numpy.ndarray            #Machine.detector.detectors[0].name: ???

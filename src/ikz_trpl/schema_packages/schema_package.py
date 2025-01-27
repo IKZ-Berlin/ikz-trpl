@@ -182,40 +182,64 @@ class TRPLInstrument(Instrument):
     )
 
 
-class Laser(TRPLInstrument):
-    type = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
-        default='Laser',
-    )
+class Laser(Instrument):
+    # type = Quantity(
+    #     type=str,
+    #     a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
+    #     default='Laser',
+    # )
     function = Quantity(
         type=MEnum(['pump/probe', 'probe', 'pump']),
-        a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
+        # a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
+        a_eln={'component': 'EnumEditQuantity'},
     )
 
 
-class NonLinearCrystal(TRPLInstrument):
-    type = Quantity(
+# class NonLinearCrystal(TRPLInstrument):
+#     type = Quantity(
+#         type=str,
+#         a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
+#         default='Non-linear crystal',
+#     )
+
+
+# class PolarizationOptic(TRPLInstrument):
+#     type = Quantity(
+#         type=str,
+#         a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
+#         default='Polarization optic',
+#     )
+
+
+# class Mirror(TRPLInstrument):
+#     type = Quantity(
+#         type=str,
+#         a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
+#         default='Mirror',
+#     )
+
+
+class MeasurementSetup(ArchiveSection):
+    setup = Quantity(
+        type=MEnum(['PL', 'TG', 'THz']),
+        a_eln=ELNAnnotation(component=ELNComponentEnum.EnumEditQuantity),
+    )
+    delay_type = Quantity(
+        type=MEnum(['mechanical', 'electronic']),
+        a_eln=ELNAnnotation(component=ELNComponentEnum.EnumEditQuantity),
+    )
+    data_processing = Quantity(
         type=str,
         a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
-        default='Non-linear crystal',
     )
-
-
-class PolarizationOptic(TRPLInstrument):
-    type = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
-        default='Polarization optic',
-    )
-
-
-class Mirror(TRPLInstrument):
-    type = Quantity(
-        type=str,
-        a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
-        default='Mirror',
-    )
+    lasers = SubSection(section_def=Laser, repeats=True)
+    non_linear_crystals = SubSection(section_def=TRPLInstrument, repeats=True)
+    polarization_optics = SubSection(section_def=TRPLInstrument, repeats=True)
+    mirrors = SubSection(section_def=TRPLInstrument, repeats=True)
+    focusing_optics = SubSection(section_def=TRPLInstrument, repeats=True)
+    filters = SubSection(section_def=TRPLInstrument, repeats=True)
+    special_components = SubSection(section_def=TRPLInstrument, repeats=True)
+    detectors = SubSection(section_def=TRPLInstrument, repeats=True)
 
 
 class LaserSettings(ArchiveSection):
@@ -223,31 +247,32 @@ class LaserSettings(ArchiveSection):
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
     )
     laser_reference = Quantity(
-        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.ReferenceEditQuantity)
+        type=Laser,
+        a_eln=ELNAnnotation(component=ELNComponentEnum.ReferenceEditQuantity),
     )
     wavelength = Quantity(
-        type=int,
+        type=float,
         unit='m',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='nm'
         ),
     )
     repetition_rate = Quantity(
-        type=int,
+        type=float,
         unit='Hz',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='kHz'
         ),
     )
     output_power = Quantity(
-        type=int,
+        type=float,
         unit='W',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='mW'
         ),
     )
     power_at_setup = Quantity(
-        type=int,
+        type=float,
         unit='W',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='mW'
@@ -256,32 +281,42 @@ class LaserSettings(ArchiveSection):
     state = Quantity(
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
     )
+    optional = Quantity(
+        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+    )
 
 
 class Excitation(ArchiveSection):
-    spot_size = Quantity(
-        type=int,
-        unit='m^2',
+    spot_size_h = Quantity(
+        type=float,
+        unit='meter',
         a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='µm²'
+            component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='µm'
+        ),
+    )
+    spot_size_v = Quantity(
+        type=float,
+        unit='meter',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='µm'
         ),
     )
     power_at_sample = Quantity(
-        type=int,
+        type=float,
         unit='W',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='mW'
         ),
     )
     fluence = Quantity(
-        type=int,
-        unit='J/m^2',
+        type=float,
+        unit='joule / centimeters**2',
         a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='mJ/cm²'
+            component=ELNComponentEnum.NumberEditQuantity, # defaultDisplayUnit='mJ/cm²'
         ),
     )
     incidence_angle = Quantity(
-        type=int,
+        type=float,
         unit='°',
         a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
     )
@@ -289,8 +324,8 @@ class Excitation(ArchiveSection):
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
     )
     wavelength = Quantity(
-        type=int,
-        unit='m',
+        type=float,
+        unit='nm',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='nm'
         ),
@@ -298,29 +333,36 @@ class Excitation(ArchiveSection):
 
 
 class Probing(ArchiveSection):
-    spot_size = Quantity(
-        type=int,
-        unit='m^2',
+    spot_size_h = Quantity(
+        type=float,
+        unit='meter',
         a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='µm²'
+            component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='µm'
+        ),
+    )
+    spot_size_v = Quantity(
+        type=float,
+        unit='m',
+        a_eln=ELNAnnotation(
+            component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='µm'
         ),
     )
     power_at_sample = Quantity(
-        type=int,
+        type=float,
         unit='W',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='mW'
         ),
     )
     fluence = Quantity(
-        type=int,
-        unit='J/m^2',
+        type=float,
+        unit='joule / centimeters**2',
         a_eln=ELNAnnotation(
-            component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='mJ/cm²'
+            component=ELNComponentEnum.NumberEditQuantity, # defaultDisplayUnit='mJ/cm²'
         ),
     )
     incidence_angle = Quantity(
-        type=int,
+        type=float,
         unit='°',
         a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
     )
@@ -328,45 +370,70 @@ class Probing(ArchiveSection):
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
     )
     wavelength = Quantity(
-        type=int,
+        type=float,
         unit='m',
         a_eln=ELNAnnotation(
             component=ELNComponentEnum.NumberEditQuantity, defaultDisplayUnit='nm'
         ),
     )
+    optional = Quantity(
+        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+    )
 
 
 class MotorStartPositions(ArchiveSection):
-    delay = Quantity(
+    motor_name = Quantity(
+        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+    )
+    # motor_reference = Quantity(
+    #    type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.ReferenceEditQuantity)
+    # )
+    value = Quantity(
         type=int,
         a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
-        minValue=-100,
-        maxValue=850,
     )
-    dummy = Quantity(
+    state = Quantity(
+        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+    )
+    lower_limit = Quantity(
         type=int,
         a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
-        minValue=-10,
-        maxValue=10,
     )
-    shutter_pump = Quantity(
+    upper_limit = Quantity(
         type=int,
         a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
-        minValue=0,
-        maxValue=1,
     )
-    shutter_probe = Quantity(
-        type=int,
-        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
-        minValue=0,
-        maxValue=1,
-    )
-    chopper = Quantity(
-        type=int,
-        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
-        minValue=0,
-        maxValue=1000,
-    )
+
+    # delay = Quantity(
+    #     type=int,
+    #     a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    #     minValue=-100,
+    #     maxValue=850,
+    # )
+    # dummy = Quantity(
+    #     type=int,
+    #     a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    #     minValue=-10,
+    #     maxValue=10,
+    # )
+    # shutter_pump = Quantity(
+    #     type=int,
+    #     a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    #     minValue=0,
+    #     maxValue=1,
+    # )
+    # shutter_probe = Quantity(
+    #     type=int,
+    #     a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    #     minValue=0,
+    #     maxValue=1,
+    # )
+    # chopper = Quantity(
+    #     type=int,
+    #     a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+    #     minValue=0,
+    #     maxValue=1000,
+    # )
 
 
 class Motors(ArchiveSection):
@@ -385,7 +452,10 @@ class Motors(ArchiveSection):
 
 
 class Scan(ArchiveSection):
-    scan_type = Quantity(
+    # scan_type = Quantity(
+    #     type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+    # )
+    command = Quantity(
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
     )
     motors = SubSection(section_def=Motors)
@@ -397,41 +467,48 @@ class Scan(ArchiveSection):
     )
 
 
-class LockInAmplifier(ArchiveSection):
-    phase_coarse_fine = Quantity(
-        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
-    )
-    sensitivity = Quantity(
-        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
-    )
-    time_constant = Quantity(
-        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
-    )
-    input_switch = Quantity(
-        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
-    )
-    pll_locking = Quantity(
-        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
-    )
-    ref_thresh = Quantity(
-        type=int,
-        unit='V',
-        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
-    )
+# class LockInAmplifier(ArchiveSection):
+#     phase_coarse_fine = Quantity(
+#         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+#     )
+#     sensitivity = Quantity(
+#         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+#     )
+#     time_constant = Quantity(
+#         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+#     )
+#     input_switch = Quantity(
+#         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+#     )
+#     pll_locking = Quantity(
+#         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+#     )
+#     ref_thresh = Quantity(
+#         type=int,
+#         unit='V',
+#         a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity),
+#     )
 
 
-class SPAD(ArchiveSection):
-    pass
+# class SPAD(ArchiveSection):
+#     pass
 
 
-class TCSPCCountingCard(ArchiveSection):
-    pass
+# class TCSPCCountingCard(ArchiveSection):
+#     pass
 
 
 class MeasurementDeviceParameters(ArchiveSection):
-    lock_in_amplifier = SubSection(section_def=LockInAmplifier)
-    spad = SubSection(section_def=SPAD)
-    tcspc_counting_card = SubSection(section_def=TCSPCCountingCard)
+    # lock_in_amplifier = SubSection(section_def=LockInAmplifier)
+    # spad = SubSection(section_def=SPAD)
+    # tcspc_counting_card = SubSection(section_def=TCSPCCountingCard)
+
+    device_name = Quantity(
+        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+    )
+    paramters = Quantity(
+        type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
+    )
 
 
 class MeasurementSettings(ArchiveSection):
@@ -454,14 +531,14 @@ class TRPLSample(CompositeSystemReference):
     )
     environment = Quantity(
         type=MEnum(['Temperature', 'Atmosphere']),
-        a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity),
+        a_eln=ELNAnnotation(component=ELNComponentEnum.EnumEditQuantity),
     )
     description = Quantity(
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
     )
 
 
-class TRPLIKZ(Measurement, Schema):
+class IKZTRPLScan(Measurement, Schema):
     name = Quantity(
         type=str, a_eln=ELNAnnotation(component=ELNComponentEnum.StringEditQuantity)
     )
@@ -475,6 +552,7 @@ class TRPLIKZ(Measurement, Schema):
     samples = SubSection(section_def=TRPLSample)
 
     measurement_settings = SubSection(section_def=MeasurementSettings)
+    measurement_setup = SubSection(section_def=MeasurementSetup)
 
     # def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
     #     super().normalize(archive, logger)
