@@ -463,12 +463,14 @@ class Scan(ArchiveSection):
     integration_time = Quantity(
         type=int, 
         unit='seconds',
-        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity, 
+                            defaultDisplayUnit='s')
     )
     settle_time = Quantity(
         type=int, 
         unit='seconds',
-        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity)
+        a_eln=ELNAnnotation(component=ELNComponentEnum.NumberEditQuantity,  
+                            defaultDisplayUnit='s')
     )
 
 
